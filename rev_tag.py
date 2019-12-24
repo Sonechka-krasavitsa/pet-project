@@ -1,6 +1,5 @@
 import win32com.client
 from pythoncom import VT_R8, VT_ARRAY, VT_I2, VT_VARIANT, com_error
-import numpy as np
 import win32api
 import re
 
@@ -32,17 +31,17 @@ def filtered_block_set(set_name, block_name):
     return sel_set
 
 
-def rev_num_filter(elem):
+def rev_num_filter(global_rev_num, elem):
     '''Фильтр атрибутов ревизий по введенной пользователем глобальной ревизии'''
-    global global_rev_num
-    '''глобальная переменная тут - говно собачье. попробуй избавиться.'''
     reg_exp = r'(0|){}\.'.format(global_rev_num)
     if re.match(reg_exp, elem):
-        return True
+        return int(re.sub(reg_exp, r'', elem))
 
 
 app = win32com.client.Dispatch("AutoCAD.Application")
 doc = app.ActiveDocument
+
+global_rev_num = 5
 
 if __name__ == "__main__":
     try:
@@ -56,22 +55,27 @@ if __name__ == "__main__":
         for i in sel_set:
             attr_set.append(i.GetAttributes())
 
-        rev_num_list = []
+        rev_num_temp_list = []
         for i in attr_set:
-            rev_num_list.append(j.TextString)
+            for j in i:
+                rev_num_temp_list.append(j.TextString)
 
-        rev_num_list_filtered = filter(rev_num_filter, rev_num_list)
-        print([i for i in rev_num_list_filtered])
+        rev_num_list = []
+        for i in rev_num_temp_list:
+            if rev_num_filter(global_rev_num, i):
+                rev_num_list.append(rev_num_filter(global_rev_num, i))
+
+        print(rev_num_list)
 
         for i in new_block.GetAttributes():
             if i.TagString == 'REVNUM':
-                i.TextString = max(rev_num_list) + 1
+                i.TextString = str(global_rev_num) + '.' + str(max(rev_num_list) + 1)
 
         for i in counter(max(rev_num_list) + 1):
             extra_block = block_input("Еще?", "RevTag")
             for j in extra_block.GetAttributes():
                 if j.TagString == 'REVNUM':
-                    j.TextString = i
+                    j.TextString = str(global_rev_num) + '.' + str(i)
 
 
     except com_error as error:
