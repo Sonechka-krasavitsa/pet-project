@@ -41,15 +41,12 @@ def rev_num_filter(global_rev_num, elem):
 app = win32com.client.Dispatch("AutoCAD.Application")
 doc = app.ActiveDocument
 
-global_rev_num = 5
+global_rev_num = doc.Utility.GetInteger('Введите номер ревизии')
 
 if __name__ == "__main__":
     try:
-        new_block = block_input("бахни", "RevTag")
+        new_block = block_input("Вставьте блок", "RevTag")
         sel_set = filtered_block_set("RevTagSet", "RevTag")
-
-        print(len(sel_set))
-        '''Удали потом это. Контролируем количество выбранных блоков'''
 
         attr_set = []
         for i in sel_set:
@@ -65,13 +62,18 @@ if __name__ == "__main__":
             if rev_num_filter(global_rev_num, i):
                 rev_num_list.append(rev_num_filter(global_rev_num, i))
 
+        if len(rev_num_list) == 0:
+            new_rev_num = 1
+        else:
+            new_rev_num = max(rev_num_list) + 1
+
         print(rev_num_list)
 
         for i in new_block.GetAttributes():
             if i.TagString == 'REVNUM':
-                i.TextString = str(global_rev_num) + '.' + str(max(rev_num_list) + 1)
+                i.TextString = str(global_rev_num) + '.' + str(new_rev_num)
 
-        for i in counter(max(rev_num_list) + 1):
+        for i in counter(new_rev_num):
             extra_block = block_input("Еще?", "RevTag")
             for j in extra_block.GetAttributes():
                 if j.TagString == 'REVNUM':
