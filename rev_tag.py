@@ -13,7 +13,7 @@ def block_input(prompt, block_name):
 
 
 def counter(start):
-    '''Счетчик с заданваемым стартовым значением и с шагом 1'''
+    '''Счетчик с задаваемым стартовым значением и с шагом 1'''
     n = start
     while True:
         n += 1
