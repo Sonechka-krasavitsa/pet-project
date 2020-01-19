@@ -3,7 +3,7 @@ from tkinter import filedialog
 
 filelist = filedialog.askopenfilenames()
 print(filelist)
-target_folder = filedialog.askdirectory()
+# target_folder = filedialog.askdirectory()
 
 app = win32com.client.Dispatch("AutoCAD.Application")
 for i in filelist:
@@ -17,4 +17,5 @@ for i in filelist:
             all_layout_name.append(j.Name)
     print(all_layout_name)
     print(doc.Name)
+    print(type(doc.Name))
     doc.Close()

@@ -1,0 +1,8 @@
+
+[DWF6Sheet:${layout_fullname}]
+DWG=${dwg_file_path}
+Layout=${layout_name}
+Setup=
+OriginalSheetPath=${dwg_file_path}
+Has Plot Port=0
+Has3DDWF=0
