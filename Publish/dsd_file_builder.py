@@ -2,9 +2,8 @@ from pathlib import Path
 import re
 
 layout_list = ['ЩР-СС.ОФ2.L3.1~1', 'ЩР-СС.ОФ2.L3.1~2', 'ЩР-СС.ОФ2.L3.1~3']
-layout_fullname = 'РК-РД-2-ЭМ4.4.01-160-02-ЩР-СС.ОФ2.L3.1~1'
 dwg_file_path = 'C:/Users/Sonya/Desktop/python/publish/РК-РД-2-ЭМ4.4.01-160-02.dwg'
-file_name = 'РК-РД-2-ЭМ4.4.01-160-02'
+file_name = 'РК-РД-2-ЭМ4.4.01-160-02.dwg'
 dsd_target_folder = 'C:/Users/Sonya/Desktop/python/publish/'
 pdf_target_folder = 'C:/Users/Sonya/Desktop/python/publish/PDF/'
 appdir = Path.cwd()
@@ -18,11 +17,19 @@ def get_marker(text):
     регулярное выражение, которое ищет маркеры вида ${xxx_xxx} в тексте
     группа marker возвращает имя параметра xxx_xxx
     '''
-    reg_exp = r'(?P<fullmatch>\${(?P<marker>\w{1,})})'
+    reg_exp = r'(\${(\w{1,})})'
     match_list = re.findall(reg_exp, text)
     fullmatch_list = [match_list[i][0] for i in range(len(match_list))]
     marker_list = [match_list[j][1] for j in range(len(match_list))]
     return fullmatch_list, marker_list
+
+
+def sheet_dict(layout_name, file_name, dwg_file_path):
+    sheet_dict = {}
+    sheet_dict['${layout_fullname}'] = re.sub(r'\.dwg', r'', file_name) + '-' + layout_name
+    sheet_dict['${dwg_file_path}'] = dwg_file_path
+    sheet_dict['${layout_name}'] = layout_name
+    return sheet_dict
 
 
 dsd_temporary_file.touch()
@@ -32,4 +39,10 @@ fullmatch_list = get_marker(sheet_info_block.read_text())[0]
 marker_list = get_marker(sheet_info_block.read_text())[1]
 print(fullmatch_list)
 print(marker_list)
-
+layout_name = 'ЩР-СС.ОФ2.L3.1~1'
+sheet_dict = sheet_dict(layout_name, file_name, dwg_file_path)
+print(sheet_dict)
+print(len(sheet_dict))
+for i in range(len(fullmatch_list)):
+    sheet_info_block.write_text(
+        sheet_info_block.read_text().replace(fullmatch_list[i], sheet_dict[fullmatch_list[i]]))
