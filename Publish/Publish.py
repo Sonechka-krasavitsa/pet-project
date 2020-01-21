@@ -81,7 +81,7 @@ for i in file_list:
     dsd_temporary_file.touch()
     dsd_temporary_file.write_text(main_text)
 
-    '''Посылаем на печать'''
+    '''Посылаем на печать файл'''
     doc.SetVariable('FILEDIA', 0)
     doc.SendCommand("-PUBLISH\n"+dsd_temporary_file.as_posix()+'\n')
     # doc.SendCommand(dsd_temporary_file.as_posix()+' \n')
