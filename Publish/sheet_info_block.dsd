@@ -1,4 +1,3 @@
-
 [DWF6Sheet:${layout_fullname}]
 DWG=${dwg_file_path}
 Layout=${layout_name}
