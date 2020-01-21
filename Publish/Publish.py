@@ -1,9 +1,7 @@
 import win32com.client as win32
-from pythoncom import VT_R8, VT_ARRAY, VT_I2, VT_VARIANT, com_error
 from tkinter import filedialog
-import re
 from pathlib import Path
-
+import re
 
 
 appdir = Path.cwd()
@@ -85,6 +83,6 @@ for i in file_list:
 
     '''Посылаем на печать'''
     doc.SetVariable('FILEDIA', 0)
-    doc.SendCommand("-_PUBLISH \n")
-    doc.SendCommand(dsd_temporary_file.as_posix()+'\n')
+    doc.SendCommand("-PUBLISH\n"+dsd_temporary_file.as_posix()+'\n')
+    # doc.SendCommand(dsd_temporary_file.as_posix()+' \n')
     doc.SetVariable('FILEDIA', 1)
