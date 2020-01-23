@@ -3,7 +3,6 @@ from tkinter import filedialog
 from pathlib import Path
 import re
 
-
 appdir = Path.cwd()
 dsd_template_file = appdir / "template.dsd"
 sheet_info_block = appdir / "sheet_info_block.dsd"
@@ -36,15 +35,26 @@ def setting_dict(pdf_target_folder, file_name, dsd_temporary_file):
     значения - информация, которую подставляем вместо маркера
     '''
     setting_dict = {}
-    setting_dict['${pdf_file_path}'] = pdf_target_folder + '/' + re.sub(r'\.dwg', r'.pdf', file_name)
+    setting_dict['${pdf_file_path}'] = pdf_target_folder + '\\' + re.sub(r'\.dwg', r'.pdf', file_name)
     setting_dict['${target_folder}'] = pdf_target_folder
-    setting_dict['${dsd_file_path}'] = dsd_temporary_file.as_posix()
+    setting_dict['${dsd_file_path}'] = dsd_temporary_file.as_posix().replace('/', '\\')
     return setting_dict
 
 
+def path_correction(path_iter):
+    new_path = []
+    for path in path_iter:
+        new_path.append(path.replace('/', '\\'))
+    return new_path
+
+
 '''Запрашиваем у пользователя файлы для паблиша и папку, куда сохраняем PDF'''
-file_list = filedialog.askopenfilenames()
-pdf_target_folder = filedialog.askdirectory()
+tmp_file_list = filedialog.askopenfilenames()
+tmp_pdf_target_folder = filedialog.askdirectory()
+
+'''Меняем / на \\'''
+file_list = path_correction(tmp_file_list)
+pdf_target_folder = tmp_pdf_target_folder.replace('/', '\\')
 
 app = win32.gencache.EnsureDispatch("AutoCAD.Application")
 for i in file_list:
@@ -83,6 +93,7 @@ for i in file_list:
 
     '''Посылаем на печать файл'''
     doc.SetVariable('FILEDIA', 0)
-    doc.SendCommand("-PUBLISH\n"+dsd_temporary_file.as_posix()+'\n')
+    doc.SendCommand("-PUBLISH\n" + dsd_temporary_file.as_posix().replace('/', '\\') + '\n')
     # doc.SendCommand(dsd_temporary_file.as_posix()+' \n')
     doc.SetVariable('FILEDIA', 1)
+    doc.Close(False)
