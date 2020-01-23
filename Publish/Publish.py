@@ -11,7 +11,7 @@ dsd_temporary_file = appdir / "tmp.dsd"
 
 def get_marker(text):
     '''
-    регулярное выражение, которое ищет маркеры вида ${xxx_xxx} в тексте шоблонов1
+    регулярное выражение, которое ищет маркеры вида ${xxx_xxx} в тексте шаблонов
     '''
     reg_exp = r'\${\w{1,}}'
     return re.findall(reg_exp, text)
