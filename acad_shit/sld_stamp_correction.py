@@ -51,6 +51,15 @@ for file in tmp_file_list:
                     else:
                         continue
 
+        '''меняем %%% на %'''
+        for i in doc.ModelSpace:
+            if i.ObjectName == 'AcDbBlockReference':
+                for attr in i.GetAttributes():
+                    if attr.TagString == 'LN02':
+                        attr.TextString = attr.TextString.replace('%%%', '%')
+            else:
+                continue
+
     finally:
         doc.regen(0)
         doc.Close(True)
