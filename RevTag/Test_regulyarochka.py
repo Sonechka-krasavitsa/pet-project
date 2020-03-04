@@ -18,7 +18,7 @@ def rev_num_filter(elem):
 # if rev_num_filter() is not None:
 #     print("работает")
 # else:
-#     print("писька")
+#     print("писькатряс")
 
 # app = win32com.client.Dispatch("AutoCAD.Application")
 # doc = app.ActiveDocument
